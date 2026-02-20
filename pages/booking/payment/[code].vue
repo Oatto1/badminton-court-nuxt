@@ -45,7 +45,7 @@
                         <td class="p-3">
                             <div class="font-bold">{{ item.court.name }}</div>
                             <div class="text-gray-500 text-xs">
-                                {{ item.date }} | {{ item.start_time.slice(0,5) }} - {{ item.end_time.slice(0,5) }}
+                                {{ (item.date ? item.date.split('T')[0] : '').split('-').reverse().join('-') }} | {{ item.start_time.slice(0,5) }} - {{ item.end_time.slice(0,5) }}
                             </div>
                         </td>
                         <td class="p-3 text-right">
@@ -72,7 +72,16 @@
                 <p class="text-xs text-gray-400 mt-1">Ref: {{ booking.booking_number }}</p>
             </div>
             
-            <button @click="checkStatus" class="w-full bg-gradient-to-r from-violet-500 to-purple-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-500/25 hover:from-violet-600 hover:to-purple-700 hover:shadow-xl transition-all active:scale-95">
+            <button 
+                @click="checkStatus" 
+                :disabled="booking.status !== 'pending_payment' || isExpired"
+                :class="[
+                    booking.status !== 'pending_payment' || isExpired 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 shadow-purple-500/25 hover:shadow-xl active:scale-95'
+                ]"
+                class="w-full text-white py-3 rounded-xl font-bold shadow-lg transition-all"
+            >
                 I have paid
             </button>
             <button @click="cancelBooking" class="w-full border border-gray-300 text-gray-600 py-3 rounded-lg font-bold hover:bg-gray-50 transition">
@@ -104,8 +113,11 @@ const updateTimer = () => {
 
     if (diff <= 0) {
         timeLeft.value = 'Expired'
-        if (booking.value.status === 'pending_payment') refresh()
+        if (booking.value.status === 'pending_payment') {
+            refresh() // Refresh to get the updated status from backend (which might have auto-expired it)
+        }
         clearInterval(timer)
+        isExpired.value = true
         return
     }
 
@@ -113,6 +125,8 @@ const updateTimer = () => {
     const seconds = Math.floor((diff % (1000 * 60)) / 1000)
     timeLeft.value = `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
+
+const isExpired = ref(false)
 
 onMounted(() => {
     updateTimer()

@@ -17,9 +17,14 @@
         <h3 class="text-2xl leading-6 font-bold text-gray-900">
           {{ bookingStore.selectedCourt?.name }}
         </h3>
-        <p class="mt-1 max-w-2xl text-sm text-gray-500">
-          Price: ฿{{ bookingStore.selectedCourt?.hourly_price }}/hour
-        </p>
+        <div class="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-sm text-gray-500">
+          <p>
+            Price: <span class="font-semibold text-gray-900">฿{{ bookingStore.selectedCourt?.hourly_price }}/hour</span>
+          </p>
+          <p v-if="bookingStore.selectedCourt?.open_time">
+            Operating Hours: <span class="font-semibold text-gray-900">{{ bookingStore.selectedCourt.open_time }} - {{ bookingStore.selectedCourt.close_time }}</span>
+          </p>
+        </div>
       </div>
       <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
           <label for="date" class="block text-sm font-medium text-gray-700">Select Date</label>
@@ -32,14 +37,14 @@
         
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             <button 
-                v-for="slot in generatedSlots" 
+                v-for="slot in bookingStore.selectedCourt?.slots || []" 
                 :key="slot.start"
-                :disabled="!slot.available"
+                :disabled="slot.is_booked"
                 @click="toggleSlot(slot)"
                 :class="[
-                    slot.available 
+                    !slot.is_booked 
                         ? (isSelected(slot) ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white ring-2 ring-offset-2 ring-purple-400' : 'bg-white text-gray-900 border-gray-300 hover:bg-purple-50 hover:text-purple-700') 
-                        : 'bg-gray-100 text-gray-400 cursor-not-allowed',
+                        : 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60',
                     'border rounded-md py-3 px-4 text-sm font-medium focus:outline-none transition'
                 ]"
             >
@@ -83,37 +88,7 @@ const date = ref(today)
 const loading = ref(false)
 const selectedSlots = ref<any[]>([])
 
-// Helper to generate slots from 09:00 to 22:00
-const generateDaySlots = () => {
-    const slots = []
-    const startHour = 9
-    const endHour = 22
-    const now = new Date()
-    const isToday = date.value === today
 
-    for (let i = startHour; i < endHour; i++) {
-        const start = `${i.toString().padStart(2, '0')}:00`
-        const end = `${(i + 1).toString().padStart(2, '0')}:00`
-        
-        // If today, mark past slots as unavailable
-        const isPast = isToday && i <= now.getHours()
-
-        const isBooked = isPast || bookingStore.bookedSlots.some((b: any) => {
-            const bookedStart = new Date(b.start_time).getHours()
-            const bookedEnd = new Date(b.end_time).getHours()
-            return i >= bookedStart && i < bookedEnd
-        })
-
-        slots.push({
-            start: start,
-            end: end,
-            available: !isBooked
-        })
-    }
-    return slots
-}
-
-const generatedSlots = computed(() => generateDaySlots())
 
 const fetchData = async () => {
     loading.value = true

@@ -39,18 +39,23 @@
         class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md"
       >
         <!-- Court Name -->
-        <div class="mb-4 flex items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15"/></svg>
+        <div class="mb-4 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15"/></svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-slate-800">{{ court.name }}</h3>
+              <p class="text-xs text-slate-500 mt-0.5" v-if="court.open_time">Hours: {{ court.open_time }} - {{ court.close_time }}</p>
+            </div>
           </div>
-          <h3 class="text-lg font-bold text-slate-800">{{ court.name }}</h3>
-          <span class="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">
+          <span class="sm:ml-auto w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">
             ฿{{ court.slots[0]?.price || 0 }}/hr
           </span>
         </div>
 
         <!-- Time Slots Grid -->
-        <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-13 gap-2">
+        <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-[repeat(auto-fit,minmax(72px,1fr))] gap-2">
           <button
             v-for="slot in court.slots"
             :key="slot.start"

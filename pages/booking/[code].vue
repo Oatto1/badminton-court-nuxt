@@ -45,7 +45,7 @@
                         <td class="p-3">
                             <div class="font-bold">{{ item.court.name }}</div>
                             <div class="text-gray-500 text-xs">
-                                {{ item.date }} | {{ item.start_time.slice(0,5) }} - {{ item.end_time.slice(0,5) }}
+                                {{ (item.date ? item.date.split('T')[0] : '').split('-').reverse().join('-') }} | {{ item.start_time.slice(0,5) }} - {{ item.end_time.slice(0,5) }}
                             </div>
                         </td>
                         <td class="p-3 text-right">

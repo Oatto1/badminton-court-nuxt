@@ -82,7 +82,7 @@
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-semibold text-slate-700">{{ item.court?.name || 'Court' }}</p>
-              <p class="text-xs text-slate-400">{{ item.date }} · {{ item.start_time?.slice(0,5) }} - {{ item.end_time?.slice(0,5) }}</p>
+              <p class="text-xs text-slate-400">{{ (item.date ? item.date.split('T')[0] : '').split('-').reverse().join('-') }} | {{ item.start_time?.slice(0,5) }} - {{ item.end_time?.slice(0,5) }}</p>
             </div>
             <p class="text-sm font-bold text-slate-600 flex-shrink-0">฿{{ Number(item.price).toLocaleString() }}</p>
           </div>

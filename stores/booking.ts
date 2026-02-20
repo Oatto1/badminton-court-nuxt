@@ -50,20 +50,10 @@ export const useBookingStore = defineStore('booking', {
                             id: courtData.id,
                             name: courtData.name,
                             hourly_price: courtData.slots[0]?.price || 0, // estimate
+                            open_time: courtData.open_time,
+                            close_time: courtData.close_time,
+                            slots: courtData.slots
                         };
-                        // The backend returns "slots" with "is_booked" boolean.
-                        // But [id].vue expects "bookedSlots" array of ranges.
-                        // We need to map the backend response to what [id].vue expects 
-                        // OR update [id].vue to use the same logic as index.vue.
-                        // Updating [id].vue to match index.vue logic is better but [id].vue has "generateDaySlots" frontend logic.
-                        // Let's map it here to satisfy [id].vue for now.
-
-                        this.bookedSlots = courtData.slots
-                            .filter((s: any) => s.is_booked)
-                            .map((s: any) => ({
-                                start_time: `${date}T${s.start}:00`,
-                                end_time: `${date}T${s.end}:00`
-                            }));
                     }
                 }
             } catch (e) {

@@ -56,12 +56,13 @@
                 Court
               </th>
               <th
-                v-for="hour in hours"
-                :key="hour"
-                class="px-1 py-3 text-center text-xs font-semibold text-slate-400"
-                style="min-width: 68px;"
+                v-for="slot in (availability?.length ? availability[0].slots : [])"
+                :key="slot.start"
+                class="px-1.5 py-2 text-center align-middle"
+                style="min-width: 76px;"
               >
-                {{ hour }}
+                <div class="text-xs font-bold text-slate-700">{{ slot.start }}</div>
+                <div class="text-[10px] font-medium text-slate-400 mt-0.5">{{ slot.end }}</div>
               </th>
             </tr>
           </thead>
@@ -146,7 +147,6 @@ const router = useRouter()
 const user = computed(() => authStore.user)
 const today = new Date().toISOString().split('T')[0]
 const selectedDate = ref(today)
-const hours = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00']
 
 const { data: availability, pending, refresh } = await useApi('/availability', {
     query: { date: selectedDate },
