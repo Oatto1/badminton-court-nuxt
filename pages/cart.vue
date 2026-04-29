@@ -10,7 +10,7 @@
     </div>
     
     <div v-if="cartStore.items.length === 0" class="px-4 py-10 text-center text-gray-500">
-        Your cart is empty.
+        Your cart is empty. 
     </div>
 
     <div v-else class="border-t border-gray-200">
